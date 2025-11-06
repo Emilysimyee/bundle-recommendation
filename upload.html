@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Data - Bundle Recommender</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-gray-50">
+  <div class="min-h-screen">
+    <!-- Header -->
+    <header class="gradient-header text-white shadow-lg">
+      <div class="container mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+          <h1 class="text-2xl font-bold">Bundle Recommender</h1>
+          <div class="flex items-center gap-4">
+            <span id="usernameDisplay" class="text-sm"></span>
+            <button id="logoutBtn" class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors">
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-blue-100 shadow-sm border-b">
+      <div class="container mx-auto px-6">
+        <div class="flex gap-6">
+          <a href="dashboard.html" class="px-4 py-7 text-gray-600 text-center hover:text-gray-900">Home</a>
+          <a href="upload.html" class="px-4 py-7 text-white text-center bg-green-500 font-bold">Upload Data</a>
+          <a href="bundles.html" class="px-4 py-7 text-gray-600 text-center hover:text-gray-900">Generate Bundles</a>
+          <a href="analytics.html" class="px-4 py-7 text-gray-600 text-center hover:text-gray-900">Analytics</a>
+          <a href="export.html" class="px-4 py-7 text-gray-600 text-center hover:text-gray-900">Export Bundles</a>
+          <a href="profile.html" class="px-4 py-7 text-gray-600 text-center hover:text-gray-900">Profile</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+      <div class="mb-8">
+        <h2 class="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+          Upload Sales Data
+        </h2>
+        <p class="text-gray-600 mt-2">Import your sales receipts to analyze co-purchase patterns</p>
+      </div>
+
+      <!-- Upload Card -->
+      <div class="bg-white border-2 border-green-200 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl shadow-sm mb-8">
+        <div class="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-t-lg p-6">
+          <h3 class="text-xl font-semibold flex items-center gap-2">
+            <span class="text-2xl">📤</span>
+            Upload CSV File
+          </h3>
+          <p class="text-green-100 mt-1">Upload a CSV file with receipt-level transaction data. You'll map the columns in the next step.</p>
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-4">
+            <input type="file" id="csvFile" accept=".csv" class="hidden">
+            <button onclick="document.getElementById('csvFile').click()" 
+                    class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
+              Choose File
+            </button>
+            <span id="fileName" class="text-gray-600"></span>
+          </div>
+          <div class="mt-4 p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
+            <h4 class="font-semibold text-sm mb-2 text-blue-900 flex items-center gap-2">
+              <span class="text-lg">📋</span>
+              Required Data:
+            </h4>
+            <ul class="text-xs text-blue-800 space-y-1">
+              <li>• Receipt ID (to identify products bought together)</li>
+              <li>• Product Name</li>
+              <li>• Product Category</li>
+              <li>• Quantity Sold</li>
+              <li>• Price per Unit</li>
+              <li>• Date (optional)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reports List -->
+      <div class="bg-white border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-sm">
+        <div class="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-t-lg p-6">
+          <h3 class="text-xl font-semibold flex items-center gap-2">
+            <span class="text-2xl">📊</span>
+            Uploaded Reports
+          </h3>
+          <p class="text-purple-100 mt-1">Manage your sales data files</p>
+        </div>
+        <div class="p-6">
+          <div id="reportsList"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Column Mapping Modal -->
+  <div id="mappingModal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="text-xl font-bold text-purple-900 flex items-center gap-2">
+          <span class="text-2xl">⚙️</span>
+          Map CSV Columns
+        </h3>
+        <p class="text-sm text-gray-600 mt-1">Match your CSV columns to the required fields</p>
+      </div>
+      <div class="modal-body">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Receipt ID Column <span class="text-red-500">*</span>
+            </label>
+            <select id="mapReceiptId" class="w-full p-3 border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none">
+              <option value="">Select column...</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Product Name Column <span class="text-red-500">*</span>
+            </label>
+            <select id="mapProduct" class="w-full p-3 border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none">
+              <option value="">Select column...</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Category Column <span class="text-red-500">*</span>
+            </label>
+            <select id="mapCategory" class="w-full p-3 border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none">
+              <option value="">Select column...</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Quantity Column <span class="text-red-500">*</span>
+            </label>
+            <select id="mapQuantity" class="w-full p-3 border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none">
+              <option value="">Select column...</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Price Column <span class="text-red-500">*</span>
+            </label>
+            <select id="mapPrice" class="w-full p-3 border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none">
+              <option value="">Select column...</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Date Column (Optional)
+            </label>
+            <select id="mapDate" class="w-full p-3 border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:outline-none">
+              <option value="">Select column...</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="cancelMapping" class="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+          Cancel
+        </button>
+        <button id="confirmUpload" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-colors font-medium">
+          <span class="text-lg mr-2">📤</span>
+          Upload
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteModal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="text-xl font-bold text-red-600 flex items-center gap-2">
+          <span class="text-2xl">⚠️</span>
+          Delete Sales Report
+        </h3>
+      </div>
+      <div class="modal-body">
+        <p class="text-gray-700 mb-2">Are you sure you want to delete this report?</p>
+        <p id="deleteReportName" class="font-semibold text-gray-900 mb-2"></p>
+        <p class="text-red-600">This action cannot be undone. All data in this report will be permanently deleted.</p>
+      </div>
+      <div class="modal-footer">
+        <button id="cancelDelete" class="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+          Cancel
+        </button>
+        <button id="confirmDelete" class="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium">
+          <span class="text-lg mr-2">🗑️</span>
+          Delete Report
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/supabase-client.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/upload.js"></script>
+
+  <!-- Placeholder where footer will load -->
+<div id="footer"></div>
+
+<script>
+  // Load footer dynamically
+  fetch('footer.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('footer').innerHTML = data;
+    });
+</script>
+
+</body>
+</html>
