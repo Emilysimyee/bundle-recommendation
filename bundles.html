@@ -9,6 +9,18 @@
   <link rel="stylesheet" href="css/styles.css">
 
   <style>
+    /* Navigation bar scrollable, hide scrollbar */
+    nav .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      min-width: max-content;
+      overflow-x: auto;
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;     /* Firefox */
+    }
+    nav .nav-links::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera */
+    }
 
     /* Data Catalog scrollable vertical, keep content inside */
     #catalogList {
@@ -20,33 +32,47 @@
       padding: 1rem;
     }
 
-    .catalog-box {
-      border: 2px solid #bfdbfe;
-      border-radius: 0.75rem;
-      background-color: #fff;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.08);
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      flex-shrink: 0;
-      word-break: break-word; /* keep content inside */
-    }
+/* Catalog box structure */
+.catalog-box {
+  border: 2px solid #bfdbfe;
+  border-radius: 0.75rem;
+  background-color: #fff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  max-width: 100%;
+  word-break: break-word;
+}
 
-    .catalog-box-header {
-      font-weight: 600;
-      font-size: 1rem;
-      color: #1f2937;
-      overflow-x: auto;
-      white-space: nowrap;
-    }
+/* File name scrollable */
+.catalog-box-header {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #1f2937;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-bottom: 0.25rem;
+}
 
-    .catalog-box-badges {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      margin-top: 0.5rem;
-    }
+/* Hide horizontal scrollbar for file name but still scrollable */
+.catalog-box-header::-webkit-scrollbar {
+  display: none;
+}
+.catalog-box-header {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Badges in second line */
+.catalog-box-badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+}
 
     .badge {
       display: inline-flex;
@@ -94,8 +120,8 @@
 
     <!-- Navigation -->
     <nav class="bg-blue-100 shadow-sm border-b">
-      <div class="container mx-auto px-6">
-        <div class="flex gap-6">
+      <div class="container mx-auto px-6 overflow-x-auto">
+        <div class="nav-links">
           <a href="dashboard.html" class="px-4 py-7 text-gray-600 hover:text-gray-900 whitespace-nowrap">Home</a>
           <a href="upload.html" class="px-4 py-7 text-gray-600 hover:text-gray-900 whitespace-nowrap">Upload Data</a>
           <a href="bundles.html" class="px-4 py-7 text-white bg-blue-600 font-bold whitespace-nowrap">Generate Bundles</a>
