@@ -64,7 +64,7 @@ function displayCatalog() {
 
   catalogList.innerHTML = `
     ${allReports.map(report => `
-      <div class="flex flex-col p-4 border-2 border-blue-200 rounded-lg hover:border-blue-400 transition-colors bg-white">
+      <div class="catalog-box">
         <!-- Top row: checkbox + file name/date -->
         <div class="flex items-start gap-4">
           <input 
@@ -74,13 +74,13 @@ function displayCatalog() {
             onchange="toggleReportSelection('${report.id}')"
           >
           <div class="flex-1">
-            <h4 class="font-semibold text-gray-900">${report.file_name}</h4>
-            <p class="text-sm text-gray-500">${utils.formatDate(report.upload_date)}</p>
+            <h4 class="catalog-box-header">${report.file_name}</h4>
+            <p class="text-sm text-gray-500 mt-1">${utils.formatDate(report.upload_date)}</p>
           </div>
         </div>
 
-        <!-- Second row: small boxes -->
-        <div class="flex flex-wrap gap-2 mt-3">
+        <!-- Second row: badges -->
+        <div class="catalog-box-badges">
           <span class="badge bg-blue-100 text-blue-700 border border-blue-200 flex-shrink-0 px-2 py-1 text-xs rounded">
             ${new Set(report.data.map(d => d.receiptId)).size} receipts
           </span>
