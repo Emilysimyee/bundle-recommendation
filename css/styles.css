@@ -192,125 +192,85 @@
   border-bottom-right-radius: 1rem;
 }
 
-/* ==============================
-   MOBILE RESPONSIVE DESIGN
-   ============================== */
+/* ===============================
+   Combined Mobile-Friendly Layout
+   =============================== */
 @media (max-width: 768px) {
-  /* General layout adjustments */
-  body, html {
-    overflow-x: hidden;
-    font-size: 15px;
-    padding: 0;
-    margin: 0;
-  }
-
-  main, .main-container {
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  /* Headings and sections */
-  h1, h2, h3 {
-    font-size: 1.25rem;
-    text-align: center;
-  }
-
-  /* Stats cards and dashboards */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .card, .stat-card {
-    padding: 1rem;
-    border-radius: 1rem;
-    text-align: center;
-  }
-
-  /* Buttons */
-  button, .btn {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    font-size: 0.95rem;
-    margin-bottom: 0.5rem;
-  }
-
-  /* Tables */
-  table {
-    width: 100%;
-    display: block;
-    overflow-x: auto;
-    border-collapse: collapse;
-  }
-
-  th, td {
+  /* General mobile scaling */
+  body {
     font-size: 0.9rem;
-    padding: 0.75rem;
-    text-align: left;
-    white-space: nowrap;
+    padding: 0;
+    overflow-x: hidden;
   }
 
-  /* Modals */
+  header h1 {
+    font-size: 1.25rem;
+  }
+
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  main {
+    padding: 1rem 0;
+  }
+
+  /* Compact nav bar */
+  nav {
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+  }
+
+  nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  nav a {
+    padding: 0.75rem 0.75rem;
+    font-size: 0.9rem;
+    display: inline-block;
+  }
+
+  /* Compact card layout */
+  .card-hover {
+    padding: 1rem !important;
+  }
+
+  /* Stack grid sections vertically */
+  .grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  /* Horizontal scroll row for stats or wide content */
+  .scroll-row {
+    display: flex;
+    overflow-x: auto;
+    gap: 1rem;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 1rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .scroll-row > * {
+    flex: 0 0 80%;
+    scroll-snap-align: center;
+  }
+
+  /* Hide scrollbars for cleaner look */
+  .scroll-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Adjust modal layout for mobile */
   .modal-content {
     width: 95%;
     max-height: 95vh;
-    margin: auto;
-    border-radius: 0.75rem;
   }
 
   .modal-body {
     max-height: 70vh;
-    overflow-y: auto;
-  }
-
-  .modal-footer {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  /* Badges & tags */
-  .badge, .pill, .tag {
-    padding: 0.5rem 1rem !important;
-    min-height: 2.25rem;
-    font-size: 0.9rem;
-  }
-
-  .number-badge {
-    padding: 0.625rem 1rem !important;
-    min-width: 2.5rem;
-    min-height: 2.5rem;
-    font-size: 0.9rem;
-  }
-
-  /* Navbar or sidebar */
-  .sidebar {
-    width: 100%;
-    position: relative;
-    height: auto;
-    box-shadow: none;
-  }
-
-  .sidebar a {
-    display: block;
-    padding: 0.75rem 1rem;
-    text-align: center;
-  }
-
-  .navbar {
-    flex-direction: column;
-    align-items: center;
-    padding: 0.5rem 0;
-  }
-
-  /* Toasts or alerts */
-  .toast {
-    bottom: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    font-size: 0.9rem;
   }
 }
