@@ -63,37 +63,36 @@ function displayCatalog() {
   }
 
   catalogList.innerHTML = `
-    <div class="space-y-3">
-      ${allReports.map(report => `
-        <div class="flex items-center gap-4 p-4 border-2 border-blue-200 rounded-lg hover:border-blue-400 transition-colors bg-white">
+    ${allReports.map(report => `
+      <div class="flex flex-col p-4 border-2 border-blue-200 rounded-lg hover:border-blue-400 transition-colors bg-white">
+        <!-- Top row: checkbox + file name/date -->
+        <div class="flex items-start gap-4">
           <input 
             type="checkbox" 
             id="report-${report.id}"
-            class="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+            class="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500 mt-1"
             onchange="toggleReportSelection('${report.id}')"
           >
-          <label for="report-${report.id}" class="flex-1 cursor-pointer">
-            <div class="flex items-center justify-between">
-              <div>
-                <h4 class="font-semibold text-gray-900">${report.file_name}</h4>
-                <p class="text-sm text-gray-500">${utils.formatDate(report.upload_date)}</p>
-              </div>
-              <div class="flex flex-wrap gap-2 justify-end">
-                <span class="badge bg-blue-100 text-blue-700 border border-blue-200 flex-shrink-0">
-                  ${new Set(report.data.map(d => d.receiptId)).size} receipts
-                </span>
-                <span class="badge bg-green-100 text-green-700 border border-green-200 flex-shrink-0">
-                  ${new Set(report.data.map(d => d.product)).size} products
-                </span>
-                <span class="badge bg-orange-100 text-orange-700 border border-orange-200 flex-shrink-0">
-                  ${new Set(report.data.map(d => d.category)).size} categories
-                </span>
-              </div>
-            </div>
-          </label>
+          <div class="flex-1">
+            <h4 class="font-semibold text-gray-900">${report.file_name}</h4>
+            <p class="text-sm text-gray-500">${utils.formatDate(report.upload_date)}</p>
+          </div>
         </div>
-      `).join('')}
-    </div>
+
+        <!-- Second row: small boxes -->
+        <div class="flex flex-wrap gap-2 mt-3">
+          <span class="badge bg-blue-100 text-blue-700 border border-blue-200 flex-shrink-0 px-2 py-1 text-xs rounded">
+            ${new Set(report.data.map(d => d.receiptId)).size} receipts
+          </span>
+          <span class="badge bg-green-100 text-green-700 border border-green-200 flex-shrink-0 px-2 py-1 text-xs rounded">
+            ${new Set(report.data.map(d => d.product)).size} products
+          </span>
+          <span class="badge bg-orange-100 text-orange-700 border border-orange-200 flex-shrink-0 px-2 py-1 text-xs rounded">
+            ${new Set(report.data.map(d => d.category)).size} categories
+          </span>
+        </div>
+      </div>
+    `).join('')}
   `;
 }
 
