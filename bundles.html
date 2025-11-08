@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generate Bundles - Bundle Recommender</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-gray-50">
+  <div class="min-h-screen">
+    <!-- Header -->
+    <header class="gradient-header text-white shadow-lg">
+      <div class="container mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+          <h1 class="text-2xl font-bold">Bundle Recommender</h1>
+          <div class="flex items-center gap-4">
+            <span id="usernameDisplay" class="font-semibold text-lg"></span>
+            <button id="logoutBtn" class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors">
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-blue-100 shadow-sm border-b">
+      <div class="container mx-auto px-6">
+        <div class="flex gap-6">
+          <a href="dashboard.html" class="px-4 py-7 text-gray-600 text-center hover:text-gray-900">Home</a>
+          <a href="upload.html" class="px-4 py-7 text-gray-600 text-center hover:text-gray-900">Upload Data</a>
+          <a href="bundles.html" class="px-4 py-7 text-white text-center bg-blue-600 font-bold">Generate Bundles</a>
+          <a href="analytics.html" class="px-4 py-7 text-gray-600 text-center hover:text-gray-900">Analytics</a>
+          <a href="export.html" class="px-4 py-7 text-gray-600 text-center hover:text-gray-900">Export Bundles</a>
+          <a href="profile.html" class="px-4 py-7 text-gray-600 text-center hover:text-gray-900">Profile</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+      <div class="mb-8">
+        <h2 class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+          Generate Bundles
+        </h2>
+        <p class="text-gray-600 mt-2">Analyze receipt data to find products frequently bought together</p>
+      </div>
+
+      <!-- Data Catalog -->
+      <div id="dataCatalog" class="bg-white border-2 border-blue-200 rounded-xl shadow-sm mb-8">
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg p-6">
+          <h3 class="text-xl font-semibold flex items-center gap-2">
+            <span class="text-2xl">📁</span>
+            Data Catalog
+          </h3>
+          <p class="text-blue-100 mt-1">Select one or more datasets to analyze</p>
+        </div>
+        <div class="p-6">
+          <div id="catalogList"></div>
+        </div>
+      </div>
+
+      <!-- No Selection Warning -->
+      <div id="noSelectionWarning" class="hidden bg-yellow-50 border-2 border-yellow-300 rounded-xl p-6 mb-8">
+        <div class="flex items-start gap-3">
+          <span class="text-3xl">⚠️</span>
+          <div>
+            <p class="font-semibold text-yellow-900 text-lg">No datasets selected</p>
+            <p class="text-sm text-yellow-700 mt-1">
+              Please select one or more datasets from the catalog above to generate bundles.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bundle Configuration -->
+      <div id="configSection" class="hidden bg-white border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-sm mb-8">
+        <div class="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-t-lg p-6">
+          <h3 class="text-xl font-semibold">Bundle Configuration</h3>
+          <p class="text-purple-100 mt-1">Configure category products and co-purchase threshold</p>
+        </div>
+        <div class="p-6 space-y-6">
+          <!-- Co-Purchase Percentage Threshold -->
+          <div class="p-4 border-2 border-blue-200 rounded-lg bg-white shadow-sm">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-2xl">🔍</span>
+              <h4 class="text-lg font-semibold text-blue-900">Minimum Co-Purchase Percentage</h4>
+            </div>
+            <p class="text-sm text-gray-600 mb-4">
+              Only show bundles with co-purchase rate above this threshold
+            </p>
+            <div class="flex items-center gap-4">
+              <input 
+                type="range" 
+                id="minPercentageSlider" 
+                min="0" 
+                max="100" 
+                step="5" 
+                value="0"
+                class="flex-1 h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer"
+              >
+              <div class="flex items-center gap-2 min-w-[100px]">
+                <input 
+                  type="number" 
+                  id="minPercentageInput" 
+                  min="0" 
+                  max="100" 
+                  value="0"
+                  class="w-20 px-3 py-2 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                >
+                <span class="text-gray-700 font-medium">%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category Configuration -->
+          <div>
+            <h4 class="text-lg font-semibold text-purple-900 mb-3">Products per Category</h4>
+            <p class="text-sm text-gray-600 mb-4">Set how many products to include from each category (0 to exclude)</p>
+            <div id="categoryConfig" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+          </div>
+
+          <button 
+            id="generateBtn"
+            class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-4 rounded-lg font-semibold text-lg shadow-lg transition-all"
+          >
+            <span class="text-2xl mr-2">✨</span>
+            Analyze & Generate Bundles
+          </button>
+        </div>
+      </div>
+
+      <!-- Generated Bundles -->
+      <div id="bundlesSection" class="hidden bg-white border-2 border-green-200 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl shadow-sm">
+        <div class="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-t-lg p-6">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-4">
+              <div class="flex items-center gap-2">
+                <input 
+                  type="checkbox" 
+                  id="selectAllBundles"
+                  class="w-5 h-5 text-green-600 rounded focus:ring-2 focus:ring-white"
+                >
+                <label for="selectAllBundles" class="text-white cursor-pointer font-normal">
+                  Select All
+                </label>
+              </div>
+              <div>
+                <h3 class="text-xl font-semibold">Generated Bundles</h3>
+                <p class="text-green-100 text-sm mt-1">Bundles ranked by actual co-purchase rate from receipts</p>
+              </div>
+            </div>
+            <button 
+              id="saveSelectedBtn"
+              class="px-6 py-3 bg-white text-green-700 hover:bg-green-50 rounded-lg font-semibold shadow-md transition-colors"
+            >
+              <span class="text-lg mr-2">📦</span>
+              Save Selected (<span id="selectedCount">0</span>)
+            </button>
+          </div>
+        </div>
+        <div class="p-6">
+          <div id="bundlesList" class="space-y-4"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/supabase-client.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/bundles.js"></script>
+
+  <!-- Placeholder where footer will load -->
+<div id="footer"></div>
+
+<script>
+  // Load footer dynamically
+  fetch('footer.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('footer').innerHTML = data;
+    });
+</script>
+
+</body>
+</html>
