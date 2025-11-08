@@ -9,26 +9,23 @@
   <link rel="stylesheet" href="css/styles.css">
 
   <style>
-    /* Data Catalog - responsive scroll */
+    /* Catalog container: scrollable if overflow */
+    #dataCatalog {
+      overflow-x: auto;
+      overflow-y: auto;
+      max-height: 400px;
+      padding: 1rem;
+    }
+
+    /* Catalog boxes */
     #catalogList {
       display: flex;
+      flex-wrap: nowrap; /* horizontal scroll if needed */
       gap: 1rem;
-      padding: 1rem;
-      overflow-x: auto;
-    }
-
-    #catalogList::-webkit-scrollbar {
-      height: 8px;
-    }
-
-    #catalogList::-webkit-scrollbar-thumb {
-      background: #93c5fd;
-      border-radius: 4px;
     }
 
     #catalogList > div {
-      min-width: 250px;
-      flex: 0 0 auto;
+      flex: 0 0 250px; /* fixed width */
       border: 2px solid #bfdbfe;
       border-radius: 0.75rem;
       background-color: #fff;
@@ -37,6 +34,48 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      min-height: 120px;
+    }
+
+    #catalogList label {
+      display: flex;
+      flex-direction: column; /* file name top, small boxes below */
+      gap: 0.5rem;
+      font-size: 0.95rem;
+      color: #374151;
+    }
+
+    #catalogList .info-boxes {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+
+    .info-box {
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    .info-receipts {
+      background-color: #dbeafe;
+      color: #1e3a8a;
+      border: 1px solid #bfdbfe;
+    }
+
+    .info-products {
+      background-color: #d1fae5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    .info-categories {
+      background-color: #ffedd5;
+      color: #9a3412;
+      border: 1px solid #fdba74;
     }
 
     /* Category config vertical list */
@@ -54,6 +93,7 @@
     }
   </style>
 </head>
+
 <body class="bg-gray-50">
   <div class="min-h-screen">
     <!-- Header -->
@@ -71,16 +111,16 @@
       </div>
     </header>
 
-    <!-- Navigation -->
+    <!-- Navigation (original version) -->
     <nav class="bg-blue-100 shadow-sm border-b">
       <div class="container mx-auto px-6">
         <div class="flex gap-6">
-          <a href="dashboard.html" class="px-4 py-7 text-gray-600 hover:text-gray-900 whitespace-nowrap">Home</a>
-          <a href="upload.html" class="px-4 py-7 text-gray-600 hover:text-gray-900 whitespace-nowrap">Upload Data</a>
-          <a href="bundles.html" class="px-4 py-7 text-white bg-blue-600 font-bold whitespace-nowrap">Generate Bundles</a>
-          <a href="analytics.html" class="px-4 py-7 text-gray-600 hover:text-gray-900 whitespace-nowrap">Analytics</a>
-          <a href="export.html" class="px-4 py-7 text-gray-600 hover:text-gray-900 whitespace-nowrap">Export Bundles</a>
-          <a href="profile.html" class="px-4 py-7 text-gray-600 hover:text-gray-900 whitespace-nowrap">Profile</a>
+          <a href="dashboard.html" class="px-4 py-7 text-gray-600 text-center hover:text-gray-900">Home</a>
+          <a href="upload.html" class="px-4 py-7 text-gray-600 text-center hover:text-gray-900">Upload Data</a>
+          <a href="bundles.html" class="px-4 py-7 text-white text-center bg-blue-600 font-bold">Generate Bundles</a>
+          <a href="analytics.html" class="px-4 py-7 text-gray-600 text-center hover:text-gray-900">Analytics</a>
+          <a href="export.html" class="px-4 py-7 text-gray-600 text-center hover:text-gray-900">Export Bundles</a>
+          <a href="profile.html" class="px-4 py-7 text-gray-600 text-center hover:text-gray-900">Profile</a>
         </div>
       </div>
     </nav>
@@ -95,7 +135,7 @@
       </div>
 
       <!-- Data Catalog -->
-      <div id="dataCatalog" class="bg-white border-2 border-blue-200 rounded-xl shadow-sm mb-8 overflow-hidden">
+      <div id="dataCatalog" class="bg-white border-2 border-blue-200 rounded-xl shadow-sm mb-8">
         <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg p-6">
           <h3 class="text-xl font-semibold flex items-center gap-2">
             <span class="text-2xl">📁</span>
@@ -167,7 +207,9 @@
             <div class="flex items-center gap-4 flex-wrap">
               <div class="flex items-center gap-2">
                 <input type="checkbox" id="selectAllBundles" class="w-5 h-5 text-green-600 rounded focus:ring-2 focus:ring-white">
-                <label for="selectAllBundles" class="text-white cursor-pointer font-normal">Select All</label>
+                <label for="selectAllBundles" class="text-white cursor-pointer font-normal">
+                  Select All
+                </label>
               </div>
               <div>
                 <h3 class="text-xl font-semibold">Generated Bundles</h3>
