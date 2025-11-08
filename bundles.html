@@ -9,35 +9,34 @@
   <link rel="stylesheet" href="css/styles.css">
 
   <style>
-    /* Data Catalog - responsive, wrapping boxes */
+    /* Data Catalog - responsive scroll */
     #catalogList {
       display: flex;
-      flex-wrap: wrap;
       gap: 1rem;
       padding: 1rem;
+      overflow-x: auto;
+    }
+
+    #catalogList::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    #catalogList::-webkit-scrollbar-thumb {
+      background: #93c5fd;
+      border-radius: 4px;
     }
 
     #catalogList > div {
-      flex: 1 1 250px; /* grow/shrink with container, min 250px */
-      max-width: 100%;
+      min-width: 250px;
+      flex: 0 0 auto;
       border: 2px solid #bfdbfe;
       border-radius: 0.75rem;
       background-color: #fff;
       box-shadow: 0 1px 2px rgba(0,0,0,0.08);
       padding: 1rem;
-      word-wrap: break-word;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-    }
-
-    #catalogList label {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-      font-size: 0.95rem;
-      color: #374151;
     }
 
     /* Category config vertical list */
@@ -55,7 +54,6 @@
     }
   </style>
 </head>
-
 <body class="bg-gray-50">
   <div class="min-h-screen">
     <!-- Header -->
@@ -169,9 +167,7 @@
             <div class="flex items-center gap-4 flex-wrap">
               <div class="flex items-center gap-2">
                 <input type="checkbox" id="selectAllBundles" class="w-5 h-5 text-green-600 rounded focus:ring-2 focus:ring-white">
-                <label for="selectAllBundles" class="text-white cursor-pointer font-normal">
-                  Select All
-                </label>
+                <label for="selectAllBundles" class="text-white cursor-pointer font-normal">Select All</label>
               </div>
               <div>
                 <h3 class="text-xl font-semibold">Generated Bundles</h3>
