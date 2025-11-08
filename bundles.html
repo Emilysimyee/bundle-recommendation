@@ -9,19 +9,21 @@
   <link rel="stylesheet" href="css/styles.css">
 
   <style>
-    /* Keep dataset cards neatly contained */
+    /* Data Catalog - responsive, wrapping boxes */
     #catalogList {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      display: flex;
+      flex-wrap: wrap;
       gap: 1rem;
       padding: 1rem;
     }
 
     #catalogList > div {
+      flex: 1 1 250px; /* grow/shrink with container, min 250px */
+      max-width: 100%;
       border: 2px solid #bfdbfe;
       border-radius: 0.75rem;
       background-color: #fff;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.08);
       padding: 1rem;
       word-wrap: break-word;
       display: flex;
@@ -48,7 +50,6 @@
       padding-right: 0.5rem;
     }
 
-    /* Prevent overflow on mobile */
     .container {
       overflow-x: hidden;
     }
@@ -104,8 +105,8 @@
           </h3>
           <p class="text-blue-100 mt-1">Select one or more datasets to analyze</p>
         </div>
-        <div id="catalogList" class="p-4">
-          <!-- dynamic datasets -->
+        <div id="catalogList">
+          <!-- dynamically populated dataset boxes -->
         </div>
       </div>
 
@@ -139,13 +140,9 @@
               Only show bundles with co-purchase rate above this threshold
             </p>
             <div class="flex items-center gap-4">
-              <input 
-                type="range" id="minPercentageSlider" min="0" max="100" step="5" value="0"
-                class="flex-1 h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
+              <input type="range" id="minPercentageSlider" min="0" max="100" step="5" value="0" class="flex-1 h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
               <div class="flex items-center gap-2 min-w-[100px]">
-                <input 
-                  type="number" id="minPercentageInput" min="0" max="100" value="0"
-                  class="w-20 px-3 py-2 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none">
+                <input type="number" id="minPercentageInput" min="0" max="100" value="0" class="w-20 px-3 py-2 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none">
                 <span class="text-gray-700 font-medium">%</span>
               </div>
             </div>
@@ -158,9 +155,7 @@
             <div id="categoryConfig" class="flex flex-col gap-4 overflow-y-auto max-h-[400px] pr-2"></div>
           </div>
 
-          <button 
-            id="generateBtn"
-            class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-4 rounded-lg font-semibold text-lg shadow-lg transition-all">
+          <button id="generateBtn" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-4 rounded-lg font-semibold text-lg shadow-lg transition-all">
             <span class="text-2xl mr-2">✨</span>
             Analyze & Generate Bundles
           </button>
@@ -183,9 +178,7 @@
                 <p class="text-green-100 text-sm mt-1">Bundles ranked by co-purchase rate</p>
               </div>
             </div>
-            <button 
-              id="saveSelectedBtn"
-              class="px-6 py-3 bg-white text-green-700 hover:bg-green-50 rounded-lg font-semibold shadow-md transition-colors">
+            <button id="saveSelectedBtn" class="px-6 py-3 bg-white text-green-700 hover:bg-green-50 rounded-lg font-semibold shadow-md transition-colors">
               <span class="text-lg mr-2">📦</span>
               Save Selected (<span id="selectedCount">0</span>)
             </button>
